@@ -101,8 +101,11 @@ class SKTSVM(BaseEstimator):
             the model. The columns correspond to the classes in sorted
             order, as they appear in the attribute `classes_`.
         """
-        
+
+
+
         if self.probability:
+            print("module>> scikitTSVM, function>>predict_proba, XValue >>{}", X.tolist())
             preds = self.model.mygetPreds(X.tolist())
             return self.plattlr.predict_proba(preds.reshape( -1, 1 ))
         else:

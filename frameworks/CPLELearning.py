@@ -14,7 +14,7 @@ from sklearn.base import BaseEstimator
 import numpy
 import sklearn.metrics
 from sklearn.linear_model import LogisticRegression as LR
-import nlopt
+#import nlopt
 import scipy.stats
 
 class CPLELearningModel(BaseEstimator):
@@ -95,7 +95,7 @@ class CPLELearningModel(BaseEstimator):
         self.bestlbls = []
         
         # unique id
-        self.id = str(unichr(numpy.random.randint(26)+97))+str(unichr(numpy.random.randint(26)+97))
+        self.id = str(chr(numpy.random.randint(26)+97))+str(chr(numpy.random.randint(26)+97))
 
     def discriminative_likelihood(self, model, labeledData, labeledy = None, unlabeledData = None, unlabeledWeights = None, unlabeledlambda = 1, gradient=[], alpha = 0.01):
         unlabeledy = (unlabeledWeights[:, 0]<0.5)*1
@@ -116,8 +116,8 @@ class CPLELearningModel(BaseEstimator):
         try:
             # labeled discriminative log likelihood
             labeledDL = -sklearn.metrics.log_loss(labeledy, P)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print (e)
             P = model.predict_proba(labeledData)
 
         # probability of unlabeled data
@@ -128,8 +128,8 @@ class CPLELearningModel(BaseEstimator):
             eps = 1e-15
             unlabeledP = numpy.clip(unlabeledP, eps, 1 - eps)
             unlabeledDL = numpy.average((unlabeledWeights*numpy.vstack((1-unlabeledy, unlabeledy)).T*numpy.log(unlabeledP)).sum(axis=1))
-        except Exception, e:
-            print e
+        except Exception as e:
+            print (e)
             unlabeledP = model.predict_proba(unlabeledData)
         
         if self.pessimistic:
@@ -167,7 +167,7 @@ class CPLELearningModel(BaseEstimator):
                 self.noimprovementsince = 0
             
             if self.verbose == 2:
-                print self.id,self.it, dl, numpy.mean(self.lastdls), improvement, round(prob, 3), (prob < 0.1)
+                print (self.id,self.it, dl, numpy.mean(self.lastdls), improvement, round(prob, 3), (prob < 0.1))
             elif self.verbose:
                 sys.stdout.write(('.' if self.pessimistic else '.') if not noimprovement else 'n')
                       
@@ -203,9 +203,9 @@ class CPLELearningModel(BaseEstimator):
             opt.set_min_objective(f)
             opt.set_maxeval(self.max_iter)
             self.bestsoftlbl = opt.optimize(lblinit)
-            print " max_iter exceeded."
-        except Exception, e:
-            print e
+            print (" max_iter exceeded.")
+        except Exception as e:
+            print (e)
             self.bestsoftlbl = self.bestlbls
             
         if numpy.any(self.bestsoftlbl != self.bestlbls):
@@ -223,8 +223,8 @@ class CPLELearningModel(BaseEstimator):
             self.model.fit(numpy.vstack((labeledX, unlabeledX)), labels)
         
         if self.verbose > 1:
-            print "number of non-one soft labels: ", numpy.sum(self.bestsoftlbl != 1), ", balance:", numpy.sum(self.bestsoftlbl<0.5), " / ", len(self.bestsoftlbl)
-            print "current likelihood: ", ll
+            print ("number of non-one soft labels: ", numpy.sum(self.bestsoftlbl != 1), ", balance:", numpy.sum(self.bestsoftlbl<0.5), " / ", len(self.bestsoftlbl))
+            print ("current likelihood: ", ll)
         
         if not getattr(self.model, "predict_proba", None):
             # Platt scaling

@@ -30,25 +30,25 @@ ysupervised = ys[ys!=-1]
 # compare models
 
 lbl = "Purely supervised QDA:"
-print lbl
+print (lbl)
 model = WQDA()
 model.fit(Xsupervised, ysupervised)
 evaluate_and_plot(model, Xs, ys, ytrue, lbl, 1)
 
 lbl = "SelfLearning QDA:"
-print lbl
+print (lbl)
 model = SelfLearningModel(WQDA())
 model.fit(Xs, ys)
 evaluate_and_plot(model, Xs, ys, ytrue, lbl, 2)
 
 lbl = "CPLE(pessimistic) QDA:"
-print lbl
+print (lbl)
 model = CPLELearningModel(WQDA(), predict_from_probabilities=True)
 model.fit(Xs, ys)
 evaluate_and_plot(model, Xs, ys, ytrue, lbl, 3)
 
 lbl = "CPLE(optimistic) QDA:"
-print lbl
+print (lbl)
 CPLELearningModel.pessimistic = False
 model = CPLELearningModel(WQDA(), predict_from_probabilities=True)
 model.fit(Xs, ys)
